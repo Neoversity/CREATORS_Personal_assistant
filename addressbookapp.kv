@@ -1,0 +1,95 @@
+#:kivy 3.0.0
+
+<MainWindow>:
+    orientation: 'vertical'
+
+    MDToolbar:
+        title: 'Phone Book'
+
+    MDBottomNavigation:
+        MDBottomNavigationItem:
+            name: 'screen search'
+            text: 'Search'
+            icon: 'account-search-outline'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+
+                MDBoxLayout:
+                    MDTextField:
+                        id: search_name
+                        hint_text: 'Search for names'
+                    MDRectangleFlatButton:
+                        text: 'Search'
+                        on_release:
+                            app.name_search_and_populate_results_list(root.ids.search_name.text)
+
+                MDBoxLayout:
+                    MDTextField:
+                        id: search_phone
+                        hint_text: 'Search for phone number'
+                    MDRectangleFlatButton:
+                        text: 'Search'
+                        on_release:
+                            app.phone_search_and_populate_results_list(root.ids.search_phone.text)
+
+                MDBoxLayout:
+                    MDTextField:
+                        id: search_email
+                        hint_text: 'Search for email'
+                    MDRectangleFlatButton:
+                        text: 'Search'
+                        on_release:
+                            app.email_search_and_populate_results_list(root.ids.search_email.text)
+
+                ScrollView:
+                    MDList:
+                        id: search_results
+
+
+
+        MDBottomNavigationItem:
+            name: 'screen add'
+            text: 'Add contact'
+            icon: 'account-plus-outline'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDTextField:
+                    hint_text: 'Input name'
+                    id: add_name
+                MDTextField:
+                    hint_text: 'Input phone'
+                    multiline: True
+                    id: add_phone
+                # MDTextField:
+                #     hint_text: 'Input email'
+                #     multiline: True
+                #     id: add_email
+                # MDTextField:
+                #     hint_text: 'Input addresses'
+                #     id: add_addresses
+                # MDTextField:
+                #     hint_text: 'Input birthday'
+                #     id: add_birthday          
+                Widget:     
+                MDFloatingActionButton:
+                    icon: 'plus'
+                    pos_hint: {'right': .95}
+                    on_release:
+                        app.save_contact_and_switch_to_search(root.ids.add_name.text, root.ids.add_phone.text)
+
+
+
+
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+
+<SearchResultsItem>:
+    IconleftWidget:
+        icon: 'phone'
+    RightButton:
+        icon: 'minus'
+
+
