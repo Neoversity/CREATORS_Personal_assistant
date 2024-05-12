@@ -11,7 +11,6 @@ session = Session()
 Base = declarative_base()
 
 
-
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
@@ -23,32 +22,30 @@ class User(Base):
 
     def __str__(self):
         return self.name
-    
 
     @classmethod
-    def add(cls,name, email, addresses, birthday):
+    def add(cls, name, email, addresses, birthday):
         user = cls(name=name, email=email, addresses=addresses, birthday=birthday)
         session.add(user)
         session.commit()
         return user
-    
+
     @classmethod
     def find_by_name(cls, name):
-        return session.query(cls).filter(cls.name.ilike(f'%{name}%'))
+        return session.query(cls).filter(cls.name.ilike(f"%{name}%"))
 
     @classmethod
     def find_by_phone(cls, phone):
-        return session.query(cls).join(Phone).filter(Phone.phone.ilike(f'%{phone}%'))
-    
+        return session.query(cls).join(Phone).filter(Phone.phone.ilike(f"%{phone}%"))
 
     @classmethod
     def find_by_email(cls, email):
-        return session.query(cls).filter(cls.email.ilike(f'%{email}%'))
-
+        return session.query(cls).filter(cls.email.ilike(f"%{email}%"))
 
     @classmethod
     def all(cls):
         return session.query(cls).all()
+
     @classmethod
     def delete_by_id(cls, user_id):
         user = session.query(cls).filter_by(id=user_id).first()
@@ -57,9 +54,6 @@ class User(Base):
             session.commit()
             return True
         return False
-    
-    
-
 
 
 class Phone(Base):
@@ -71,7 +65,6 @@ class Phone(Base):
 
     def __str__(self):
         return self.phone
-    
 
     @classmethod
     def add(cls, phone, user):
@@ -79,8 +72,6 @@ class Phone(Base):
         session.add(phone)
         session.commit()
         return phone
-    
-
 
 
 Base.metadata.create_all(engine)
