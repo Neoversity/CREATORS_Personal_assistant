@@ -5,8 +5,12 @@
 
     MDToolbar:
         title: 'Phone Book'
+        MDIconButton:
+            icon: 'expand-all-outline'
+            on_release: app.show_all()
 
     MDBottomNavigation:
+        id: bottom_nav
         MDBottomNavigationItem:
             name: 'screen search'
             text: 'Search'
@@ -43,9 +47,11 @@
                             app.email_search_and_populate_results_list(root.ids.search_email.text)
 
                 ScrollView:
+                    size_hint: 1, 5
                     MDList:
                         id: search_results
-
+                
+                Widget:
 
 
         MDBottomNavigationItem:
@@ -61,23 +67,22 @@
                 MDTextField:
                     hint_text: 'Input phone'
                     multiline: True
-                    id: add_phone
-                # MDTextField:
-                #     hint_text: 'Input email'
-                #     multiline: True
-                #     id: add_email
-                # MDTextField:
-                #     hint_text: 'Input addresses'
-                #     id: add_addresses
-                # MDTextField:
-                #     hint_text: 'Input birthday'
-                #     id: add_birthday          
+                    id: add_phones
+                MDTextField:
+                    hint_text: 'Input email'
+                    id: add_email
+                MDTextField:
+                    hint_text: 'Input addresses'
+                    id: add_addresses
+                MDTextField:
+                    hint_text: 'Input birthday'
+                    id: add_birthday          
                 Widget:     
                 MDFloatingActionButton:
                     icon: 'plus'
                     pos_hint: {'right': .95}
                     on_release:
-                        app.save_contact_and_switch_to_search(root.ids.add_name.text, root.ids.add_phone.text)
+                        app.save_contact_and_switch_to_search(root.ids.add_name.text, root.ids.add_phones.text, root.ids.add_addresses.text, root.ids.add_birthday.text, root.ids.add_email.text,)
 
 
 
@@ -87,9 +92,11 @@
             name: 'screen 3'
 
 <SearchResultsItem>:
-    IconleftWidget:
+    IconLeftWidget:
         icon: 'phone'
     RightButton:
         icon: 'minus'
+        on_release:
+            root.delete_phone()
 
 

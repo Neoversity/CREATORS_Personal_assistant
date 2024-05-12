@@ -11,43 +11,55 @@ session = Session()
 Base = declarative_base()
 
 
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     phones = relationship("Phone", cascade="all, delete", back_populates="user")
+    email = Column(String)
+    addresses = Column(String)
+    birthday = Column(String)
 
     def __str__(self):
         return self.name
     
 
     @classmethod
-    def add(cls,name):
-        user = cls(name=name)
+    def add(cls,name, email, addresses, birthday):
+        user = cls(name=name, email=email, addresses=addresses, birthday=birthday)
         session.add(user)
         session.commit()
         return user
     
+    @classmethod
+    def find_by_name(cls, name):
+        return session.query(cls).filter(cls.name.ilike(f'%{name}%'))
 
-# class User(Base):
-#     __tablename__ = "users"
-#     id = Column(Integer, primary_key=True)
-#     name = Column(String, nullable=False)
-#     phones = relationship("Phone", cascade="all, delete", back_populates="user")
-#     emails = relationship("Email", cascade="all, delete", back_populates="user")
-#     addresses = Column(String)
-#     birthday = Column(String)
-
-#     def __str__(self):
-#         return self.name
+    @classmethod
+    def find_by_phone(cls, phone):
+        return session.query(cls).join(Phone).filter(Phone.phone.ilike(f'%{phone}%'))
     
 
-#     @classmethod
-#     def add(cls,name, addresses, birthday):
-#         user = cls(name=name, addresses=addresses, birthday=birthday)
-#         session.add(user)
-#         session.commit()
-#         return user    
+    @classmethod
+    def find_by_email(cls, email):
+        return session.query(cls).filter(cls.email.ilike(f'%{email}%'))
+
+
+    @classmethod
+    def all(cls):
+        return session.query(cls).all()
+    @classmethod
+    def delete_by_id(cls, user_id):
+        user = session.query(cls).filter_by(id=user_id).first()
+        if user:
+            session.delete(user)
+            session.commit()
+            return True
+        return False
+    
+    
+
 
 
 class Phone(Base):
@@ -69,22 +81,6 @@ class Phone(Base):
         return phone
     
 
-# class Email(Base):
-#     __tablename__ = "emails"
-#     id = Column(Integer, primary_key=True)
-#     email = Column(String, nullable=False)
-#     user_id = Column(Integer, ForeignKey("users.id"))
-#     user = relationship("User", back_populates="emails")
-
-#     def __str__(self):
-#         return self.email    
-
-#     @classmethod
-#     def add(cls, email, user):
-#         email = cls(email=email, user=user)
-#         session.add(email)
-#         session.commit()
-#         return email
 
 
 Base.metadata.create_all(engine)
