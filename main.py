@@ -47,14 +47,8 @@ class SearchResultsItem(TwoLineAvatarIconListItem):
         self.user_id = user_id
 
     def delete(self):
-        print(f'note {self.note_id}')
-        print(f'user {self.user_id}')
-        print(f"Deleting: note_id={self.note_id}, user_id={self.user_id}")
         if self.note_id:
-            print(f"Deleting note {self.note_id}")
-            # Перевірка існування запису перед видаленням
             note = Note.find_by_tag(self.note_id)
-            print(f'note {note} {self.note_id}')
             if note:
                 if Note.delete_note_by_id(self.note_id):
                     self.parent.remove_widget(self)
@@ -65,8 +59,7 @@ class SearchResultsItem(TwoLineAvatarIconListItem):
                 print(f"Note {self.note_id} does not exist")
         elif self.user_id:
             print(f"Deleting user {self.user_id}")
-            # Перевірка існування запису перед видаленням
-            user = User.find_by_name(self.user_id)  # Змінено на метод find_by_email
+            user = User.find_by_name(self.user_id) 
             if user:
                 if delete_by_id(self.user_id):
                     self.parent.remove_widget(self)
@@ -75,7 +68,6 @@ class SearchResultsItem(TwoLineAvatarIconListItem):
                     print(f"Failed to delete user {self.user_id}")
             else:
                 print(f"User {self.user_id} does not exist")
-
 
 
 class AddressBookApp(MDApp):
@@ -162,32 +154,27 @@ class AddressBookApp(MDApp):
                 SearchResultsItem(
                     text=f"{note[0]}",
                     secondary_text=f"{note[1]}",
-                    user_id=note[2],
+                    note_id=note[2],
                 )
             )
-
-
 
     def note_search_and_populate_results_list(self, query):
         app = MDApp.get_running_app()
         result_list_widget = app.root.ids.search_results
         result_list_widget.clear_widgets()
-
         try:
-            notes = show_all_for_note(
-                query
-            )  # Викликаємо метод find_by_tag для пошуку за тегом
+            notes = show_all_for_note(query)
             for note in notes:
                 result_list_widget.add_widget(
                     SearchResultsItem(
                         text=f"{note[0]}",
                         secondary_text=f"{note[1]}",
-                        user_id=note[2],
+                        note_id=note[2],
                     )
                 )
         except Exception as e:
             print(f"Error loading notes from the database: {e}")
-            # Обробляємо помилку тут, наприклад, виводимо повідомлення про помилку користувачеві
+
 
     def save_note_and_switch_to_search(self, tag, description):
         last_note_id = note_saver(tag, description)
