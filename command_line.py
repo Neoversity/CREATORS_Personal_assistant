@@ -5,6 +5,8 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 
 
+
+
 class CommandLineProcessor:
     def __init__(self, address_book_app, **kwargs):
         super().__init__(**kwargs)
@@ -77,33 +79,4 @@ class CommandLineProcessor:
 
 
 
-class Example(MDApp):
-    def build(self):
-        return Widget()
 
-    def on_start(self):
-        self.show_exit_dialog()
-
-    def show_exit_dialog(self):
-        exit_dialog = MDDialog(
-            title="Exit Confirmation",
-            text="Are you sure you want to exit?",
-            buttons=[
-                MDFlatButton(
-                    text="CANCEL",
-                    theme_text_color="Custom",
-                    text_color=self.theme_cls.primary_color,
-                    on_release=lambda *args: exit_dialog.dismiss(),
-                ),
-                MDFlatButton(
-                    text="EXIT",
-                    theme_text_color="Custom",
-                    text_color=self.theme_cls.primary_color,
-                    on_release=self.close_app,
-                ),
-            ],
-        )
-        exit_dialog.open()
-
-    def close_app(self, *args):
-        self.stop()

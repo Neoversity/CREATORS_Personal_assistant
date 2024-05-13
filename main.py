@@ -188,7 +188,19 @@ class AddressBookApp(MDApp):
     def build(self):
         self.command_processor = CommandLineProcessor(self)
         return MainWindow()
+    def close_app(self, *args):
+        self.stop()
 
+
+
+
+
+
+
+
+
+
+        
 
 if __name__ == "__main__":
     app = AddressBookApp()
