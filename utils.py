@@ -1,4 +1,12 @@
-from models import User, Phone
+import re
+
+from models import User, Phone, Note
+
+
+def is_valid_phone(phone):
+    # Регулярний вираз для перевірки телефонного номера у форматі +380501111111
+    pattern = r"^\d{10}$"
+    return re.match(pattern, phone) is not None
 
 
 def phone_saver(
@@ -42,3 +50,24 @@ def show_all_for_phones():
 
 def delete_by_id(user_id):
     return User.delete_by_id(user_id)
+
+
+def note_saver(tag: str, description: str) -> bool:
+    if tag and description:
+        note = Note.add(tag, description)
+        if note:
+            return note.id
+    return False
+
+
+def show_all_for_note(tag: str):
+    return [
+        tuple([note.tag, note.description, note.id]) for note in Note.find_by_tag(tag)
+    ]
+
+
+def delete_note_by_id(note_id):
+    return Note.delete_note_by_id(note_id)
+
+
+Note.delete_note_by_id(1)

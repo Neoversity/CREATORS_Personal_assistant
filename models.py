@@ -56,6 +56,40 @@ class User(Base):
         return False
 
 
+class Note(Base):
+    __tablename__ = "notes"
+    id = Column(Integer, primary_key=True)
+    tag = Column(String, nullable=False)
+    description =  Column(String, nullable=False)
+
+    def __str__(self):
+        return self.tag
+
+    @classmethod
+    def add(cls, tag, description):
+        note = cls(tag=tag, description=description)
+        session.add(note)
+        session.commit()
+        return note
+
+    @classmethod
+    def find_by_tag(cls, tag):
+        return session.query(cls).filter(cls.tag.ilike(f"%{tag}%"))
+
+
+    @classmethod
+    def all(cls):
+        return session.query(cls).all()
+
+    @classmethod
+    def delete_note_by_id(cls, note_id):
+        note = session.query(cls).filter_by(id=note_id).first()
+        if note:
+            session.delete(note)
+            session.commit()
+            return True
+        return False
+
 class Phone(Base):
     __tablename__ = "phones"
     id = Column(Integer, primary_key=True)
@@ -75,3 +109,5 @@ class Phone(Base):
 
 
 Base.metadata.create_all(engine)
+
+# Note.delete_note_by_id(1)
