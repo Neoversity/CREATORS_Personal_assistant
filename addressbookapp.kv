@@ -176,13 +176,19 @@
                     halign: 'center'
 
                 MDLabel:
-                    text: 'Welcome to Command Line Interface!\nEnter the command to execute\n"add", "change", "phone", "all", "add-birthday", "show-birthday", "birthdays", "hello", "close", "exit"'
+                    id: command_output_result
+                    text: ''
+                    halign: 'center'
+
+                MDLabel:
+                    text: 'Welcome to Command Line Interface!\nEnter the command to execute\n"add", "change", "phone", "all", "add-birthday", "show-birthday", "birthdays", "hello", "close", "exit"\n"add_note", "all_note", "delete_note"\n"home"'
                     halign: 'center'
 
                 MDTextField:
                     hint_text: 'Enter your command here...'
                     id: command_input
-                    on_text_validate: app.process_command(root.ids.command_input.text)   
+                    on_text_validate: app.process_command(root.ids.command_input.text)
+            
         
 
 <SearchResultsItem>:

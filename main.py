@@ -1,20 +1,20 @@
-import models
+# import models
 
-from kivy.uix.widget import Widget
+# from kivy.uix.widget import Widget
 from kivymd.app import MDApp
-from kivymd.uix.label import MDLabel
+# from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.list import IRightBody, TwoLineAvatarIconListItem
 
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.dialog import MDDialog
+# from kivymd.uix.button import MDFlatButton
+# from kivymd.uix.dialog import MDDialog
 
 from models import Note, User
 
 from command_line import CommandLineProcessor
 
-from models import session
+# from models import session
 
 
 from utils import (
@@ -27,7 +27,7 @@ from utils import (
     is_valid_phone,
     note_saver,
     show_all_for_note,
-    delete_note_by_id,
+    # delete_note_by_id,
 )
 
 
@@ -59,7 +59,7 @@ class SearchResultsItem(TwoLineAvatarIconListItem):
                 print(f"Note {self.note_id} does not exist")
         elif self.user_id:
             print(f"Deleting user {self.user_id}")
-            user = User.find_by_name(self.user_id) 
+            user = User.find_by_name(self.user_id)
             if user:
                 if delete_by_id(self.user_id):
                     self.parent.remove_widget(self)
@@ -175,7 +175,6 @@ class AddressBookApp(MDApp):
         except Exception as e:
             print(f"Error loading notes from the database: {e}")
 
-
     def save_note_and_switch_to_search(self, tag, description):
         last_note_id = note_saver(tag, description)
         if last_note_id:
@@ -188,19 +187,10 @@ class AddressBookApp(MDApp):
     def build(self):
         self.command_processor = CommandLineProcessor(self)
         return MainWindow()
+
     def close_app(self, *args):
         self.stop()
 
-
-
-
-
-
-
-
-
-
-        
 
 if __name__ == "__main__":
     app = AddressBookApp()

@@ -60,7 +60,7 @@ class Note(Base):
     __tablename__ = "notes"
     id = Column(Integer, primary_key=True)
     tag = Column(String, nullable=False)
-    description =  Column(String, nullable=False)
+    description = Column(String, nullable=False)
 
     def __str__(self):
         return self.tag
@@ -76,7 +76,6 @@ class Note(Base):
     def find_by_tag(cls, tag):
         return session.query(cls).filter(cls.tag.ilike(f"%{tag}%"))
 
-
     @classmethod
     def all(cls):
         return session.query(cls).all()
@@ -89,6 +88,7 @@ class Note(Base):
             session.commit()
             return True
         return False
+
 
 class Phone(Base):
     __tablename__ = "phones"
@@ -110,4 +110,4 @@ class Phone(Base):
 
 Base.metadata.create_all(engine)
 
-# Note.delete_note_by_id(1)
+
