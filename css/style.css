@@ -500,3 +500,9 @@ h6,
     padding-right: 0;
     border-right: none;
 }
+
+
+.feature-item1 {
+    background: url('/img/team-8.jpg') no-repeat center center / cover;
+    /* Додайте інші стилі, які вам потрібні */
+}
