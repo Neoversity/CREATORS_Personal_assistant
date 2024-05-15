@@ -1,4 +1,4 @@
-# PPF_BP_Personal_assistant
+# PPF_BP_Personal_assistant  (Python Programming: Foundations and Best Practices)
 
 # Installing and launching the application
 
