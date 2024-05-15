@@ -1,12 +1,4 @@
-# from kivy.uix.widget import Widget
-
-# from kivymd.app import MDApp
-# from kivymd.uix.button import MDFlatButton
-# from kivymd.uix.dialog import MDDialog
-
 from models import Note
-
-# from sqlalchemy.orm import sessionmaker
 
 
 class CommandLineProcessor:
@@ -19,6 +11,7 @@ class CommandLineProcessor:
             "change": self.change_contact,
             "phone": self.phone_search,
             "all": self.show_all_contacts,
+            "delete": self.delete_contact,
             "add-birthday": self.add_birthday,
             "show-birthday": self.show_birthday,
             "birthdays": self.show_all_birthdays,
@@ -57,6 +50,9 @@ class CommandLineProcessor:
 
     def show_all_contacts(self):
         # Implement logic to show all contacts
+        pass
+
+    def delete_contact(self):
         pass
 
     def add_birthday(self):

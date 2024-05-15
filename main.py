@@ -1,14 +1,8 @@
-# import models
 
-# from kivy.uix.widget import Widget
 from kivymd.app import MDApp
-# from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.list import IRightBody, TwoLineAvatarIconListItem
-
-# from kivymd.uix.button import MDFlatButton
-# from kivymd.uix.dialog import MDDialog
 
 from models import Note, User
 
