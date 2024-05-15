@@ -1,4 +1,3 @@
-
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
@@ -7,8 +6,6 @@ from kivymd.uix.list import IRightBody, TwoLineAvatarIconListItem
 from models import Note, User
 
 from command_line import CommandLineProcessor
-
-# from models import session
 
 
 from utils import (
@@ -21,7 +18,6 @@ from utils import (
     is_valid_phone,
     note_saver,
     show_all_for_note,
-    # delete_note_by_id,
 )
 
 

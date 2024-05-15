@@ -18,9 +18,10 @@ class CommandLineProcessor:
             "hello": self.say_hello,
             "close": self.close_app,
             "exit": self.close_app,
-            "add_note": self.add_note,            
+            "add_note": self.add_note,
             "all_note": self.show_all_note,
             "delete_note": self.delete_note,
+            "search_note": self.search_note,
         }
         self.waiting_for_note = False  # Нова змінна для відстеження стану
 
@@ -148,6 +149,52 @@ class CommandLineProcessor:
             on_text_validate=self.process_delete_note_input
         )
         return True
+
+    def search_note(self):
+        self.address_book_app.root.ids.command_output_result.text = "Please enter the tags to search for, separated by spaces: <tag1> <tag2> ..."
+        self.address_book_app.root.ids.command_input.bind(
+            on_text_validate=self.process_search_note_input
+        )
+        self.address_book_app.root.ids.command_input.text = ""
+
+    def process_search_note_input(self, instance):
+        input_text = instance.text
+        if input_text.lower() == "home":
+            self.go_to_home()
+            return True  # Повертаємо True, щоб припинити обробку події
+
+        # Розділяємо введені теги на список
+        tags = input_text.split()
+        all_notes = []
+
+        # Проходимося по кожному тегу та шукаємо нотатки
+        for tag in tags:
+            notes = Note.find_by_tag(tag)
+            all_notes.extend(notes)
+
+        if all_notes:
+            note_list = "\n".join(
+                [
+                    f"{note.id}: Tag: {note.tag}, Description: {note.description}"
+                    for note in all_notes
+                ]
+            )
+            self.address_book_app.root.ids.command_output_result.text = (
+                f"Notes found for tags '{input_text}':\n{note_list}"
+            )
+        else:
+            self.address_book_app.root.ids.command_output_result.text = (
+                f"No notes found for tags '{input_text}'."
+            )
+        # Запитуємо користувача про наступний запит або вихід у головне меню
+        self.address_book_app.root.ids.command_output_result.text += "\n\nEnter next tags to search for, or type 'home' to return to the main menu:"
+        self.address_book_app.root.ids.command_input.text = ""
+        # Відмінюємо обробник події on_text_validate після пошуку нотатків
+        self.address_book_app.root.ids.command_input.unbind(
+            on_text_validate=self.process_search_note_input
+        )
+        # Повертаємо False, щоб Kivy продовжував обробку подій
+        return False
 
     def say_hello(self):
         self.address_book_app.root.ids.command_output_result.text = "Hello!"
