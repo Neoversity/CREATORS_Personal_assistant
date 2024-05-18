@@ -502,5 +502,50 @@ h6,
 }
 
 
+.bg-light-custom {
+    background-color: #f8f9fa; /* Можна обрати світліший відтінок */
+}
+.btn-light-custom {
+    background-color: #e2e6ea; /* Світліший відтінок для кнопки */
+    color: #0077b5; /* Колір тексту кнопки */
+}
 
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    max-width: 90%;
+    max-height: 80%;
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+}
+
+.modal-content, .modal {
+    cursor: pointer;
+}
+
+.modal-content:hover {
+    opacity: 0.8;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+}
 
