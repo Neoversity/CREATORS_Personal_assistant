@@ -1,7 +1,15 @@
 from models import Note
 
+from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
+
+from models import session
+
 
 class CommandLineProcessor:
+
     def __init__(self, address_book_app, **kwargs):
         super().__init__(**kwargs)
         self.address_book_app = address_book_app
@@ -161,13 +169,13 @@ class CommandLineProcessor:
         input_text = instance.text
         if input_text.lower() == "home":
             self.go_to_home()
-            return True  # Повертаємо True, щоб припинити обробку події
+            return True  # Return True to stop event processing
 
-        # Розділяємо введені теги на список
+        # Split the input text into tags
         tags = input_text.split()
         all_notes = []
 
-        # Проходимося по кожному тегу та шукаємо нотатки
+        # Search for notes by each tag
         for tag in tags:
             notes = Note.find_by_tag(tag)
             all_notes.extend(notes)
@@ -182,19 +190,82 @@ class CommandLineProcessor:
             self.address_book_app.root.ids.command_output_result.text = (
                 f"Notes found for tags '{input_text}':\n{note_list}"
             )
+            # Ask the user if they want to change a note
+            self.address_book_app.root.ids.command_output_result.text += "\n\nDo you want to change a note? Enter its ID or type 'home' to return to the main menu:"
+            self.address_book_app.root.ids.command_input.text = ""
+            self.address_book_app.root.ids.command_input.bind(
+                on_text_validate=self.process_change_note_input
+            )
         else:
             self.address_book_app.root.ids.command_output_result.text = (
                 f"No notes found for tags '{input_text}'."
             )
-        # Запитуємо користувача про наступний запит або вихід у головне меню
-        self.address_book_app.root.ids.command_output_result.text += "\n\nEnter next tags to search for, or type 'home' to return to the main menu:"
-        self.address_book_app.root.ids.command_input.text = ""
-        # Відмінюємо обробник події on_text_validate після пошуку нотатків
-        self.address_book_app.root.ids.command_input.unbind(
-            on_text_validate=self.process_search_note_input
-        )
-        # Повертаємо False, щоб Kivy продовжував обробку подій
+            # Ask the user for the next request or return to the main menu
+            self.address_book_app.root.ids.command_output_result.text += "\n\nEnter next tags to search for, or type 'home' to return to the main menu:"
+            self.address_book_app.root.ids.command_input.text = ""
+            # Unbind the on_text_validate event handler after searching for notes
+            self.address_book_app.root.ids.command_input.unbind(
+                on_text_validate=self.process_search_note_input
+            )
+        # Return False to let Kivy continue event processing
         return False
+
+    def process_change_note_input(self, instance):
+        input_text = instance.text
+        if input_text.lower() == "home":
+            self.go_to_home()
+            return True  # Return True to stop event processing
+
+        try:
+            note_id = int(input_text)
+            note = session.query(Note).get(note_id)
+            if note:
+                self.edit_note(note)
+            else:
+                self.address_book_app.root.ids.command_output_result.text = (
+                    f"No note found with ID {note_id}."
+                )
+        except ValueError:
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Please enter a valid note ID."
+            )
+
+        # Ask the user for the next request or return to the main menu
+        self.address_book_app.root.ids.command_output_result.text += "\n\nEnter next note ID to change, or type 'home' to return to the main menu:"
+        self.address_book_app.root.ids.command_input.text = ""
+        # Unbind the on_text_validate event handler after searching for notes
+        self.address_book_app.root.ids.command_input.unbind(
+            on_text_validate=self.process_change_note_input
+        )
+        # Return False to let Kivy continue event processing
+        return False
+
+    def edit_note(self, note):
+        # Open a popup for editing the note
+        popup = Popup(title=f"Edit Note ID: {note.id}", size_hint=(0.8, 0.8))
+        layout = BoxLayout(orientation="vertical")
+        tag_input = TextInput(text=note.tag, multiline=False)
+        description_input = TextInput(text=note.description, multiline=True)
+        save_button = Button(text="Save")
+        save_button.bind(
+            on_release=lambda instance: self.save_edited_note(
+                note, tag_input.text, description_input.text, popup
+            )
+        )
+        layout.add_widget(tag_input)
+        layout.add_widget(description_input)
+        layout.add_widget(save_button)
+        popup.content = layout
+        popup.open()
+
+    def save_edited_note(self, note, new_tag, new_description, popup):
+        note.tag = new_tag
+        note.description = new_description
+        session.commit()
+        popup.dismiss()
+        self.address_book_app.root.ids.command_output_result.text = (
+            f"Note ID: {note.id} has been updated."
+        )
 
     def say_hello(self):
         self.address_book_app.root.ids.command_output_result.text = "Hello!"
