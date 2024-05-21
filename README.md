@@ -1,5 +1,5 @@
-# CREATORS - Assistant
-<img src="logo_sm.jpg" alt="Logo CREATORS" width="40" height="40">
+# <img src="logo_sm.jpg" alt="Logo CREATORS" width="40" height="40"> CREATORS - Assistant
+
 #### (Python Programming: Foundations and Best Practices)
 
 # Installing and launching the application
