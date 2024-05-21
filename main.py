@@ -1,4 +1,6 @@
+from kivy.app import App
 from kivymd.app import MDApp
+from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.list import IRightBody, TwoLineAvatarIconListItem
@@ -174,12 +176,18 @@ class AddressBookApp(MDApp):
             sm.switch_tab("screen search")
             print(f"Last note saved with id: {self.note_id}")
 
+    def close_app(self, *args):
+        self.stop()
+
     def build(self):
         self.command_processor = CommandLineProcessor(self)
         return MainWindow()
 
-    def close_app(self, *args):
-        self.stop()
+    def process_command(self, command_text):
+        self.command_processor.on_command_entered(command_text)
+
+    def show_command_suggestions(self, text):
+        self.command_processor.show_suggestions(text)
 
 
 if __name__ == "__main__":

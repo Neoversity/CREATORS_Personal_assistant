@@ -5,6 +5,9 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 
+from kivy.uix.dropdown import DropDown
+
+
 from models import session
 
 
@@ -31,19 +34,45 @@ class CommandLineProcessor:
             "delete_note": self.delete_note,
             "search_note": self.search_note,
         }
-        self.waiting_for_note = False  # Нова змінна для відстеження стану
+        self.dropdown = None  # Додати змінну для DropDown
 
-    def on_command_entered(self, command):
+    def show_suggestions(self, text):
+        # Показуємо пропозиції тільки якщо введено хоча б одну літеру
+        if len(text) > 0:
+            suggestions = [cmd for cmd in self.commands if cmd.startswith(text)]
+            self.update_dropdown(suggestions)
+        else:
+            if self.dropdown:
+                self.dropdown.dismiss()
+                self.dropdown = None
+
+    def update_dropdown(self, suggestions):
+        if self.dropdown:
+            self.dropdown.dismiss()
+
+        self.dropdown = DropDown()
+        for suggestion in suggestions:
+            btn = Button(text=suggestion, size_hint_y=None, height=44)
+            btn.bind(on_release=lambda btn: self.select_suggestion(btn.text))
+            self.dropdown.add_widget(btn)
+
+        self.dropdown.open(self.address_book_app.root.ids.command_input)
+
+    def select_suggestion(self, suggestion):
+        self.address_book_app.root.ids.command_input.text = suggestion
+        self.execute_command(suggestion)  # Додати автоматичне виконання команди
+
+    def execute_command(self, command):
         if command in self.commands:
-            if command == "exit" or command == "close":
-                self.address_book_app.close_app()
-            else:
-                self.commands[command]()
-                self.address_book_app.root.ids.command_output.text = (
-                    "Results of the command: " + command
-                )
+            self.commands[command]()
+            self.address_book_app.root.ids.command_output.text = (
+                "Results of the command: " + command
+            )
         else:
             self.address_book_app.root.ids.command_output.text = "Unknown command!"
+
+    def on_command_entered(self, command):
+        self.execute_command(command)
 
     def add_contact(self):
         # Implement logic to add a new contact
@@ -268,11 +297,13 @@ class CommandLineProcessor:
         )
 
     def say_hello(self):
-        self.address_book_app.root.ids.command_output_result.text = "Hello!"
+        self.address_book_app.root.ids.command_output_result.text = (
+            "Hello! \nThe 'CREATORS' team welcomes you"
+        )
         self.address_book_app.root.ids.command_input.text = ""
 
     def close_app(self):
-        pass
+        self.address_book_app.stop()
 
     def go_to_home(self):
         # Повертаємо до початкового стану для вибору команди

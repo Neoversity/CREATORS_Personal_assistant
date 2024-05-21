@@ -4,9 +4,11 @@
     orientation: 'vertical'
 
     MDToolbar:
-        title: 'Phone & Note Book'
+        title: 'CREATORS - Assistant'
         size_hint_y: None
         height: dp(45)
+        icon: 'logo_sm.jpg'
+        
         MDIconButton:
             icon: 'expand-all-outline'
             on_release: app.show_all()
@@ -169,25 +171,43 @@
             
             MDBoxLayout:
                 orientation: 'vertical'
-                
+                                
                 MDLabel:
                     id: command_output
                     text: ''
                     halign: 'center'
+                    size_hint_y: 0.1  # Використання відсоткової висоти
+                    theme_text_color: 'Custom'
+                    text_color: [ 0, 139, 139, 1 ]
+
+
+
+                ScrollView:
+                    # size_hint_y: None
+                    # height: dp(300)  # Задання висоти для ScrollView
+                    size_hint_y: 0.7  # Використання відсоткової висоти
+                    MDLabel:
+                        id: command_output_result
+                        text: ''
+                        halign: 'center'
+                        size_hint_y: None
+                        height: self.texture_size[1]  # Встановлення висоти тексту
 
                 MDLabel:
-                    id: command_output_result
-                    text: ''
+                    text: '\nWelcome to Command Line Interface!\nEnter the command to execute\n"add", "change", "phone", "all", "add-birthday", "show-birthday", "birthdays", "hello", "close", "exit"\n"add_note", "all_note", "delete_note", "search_note"\n"home"'
                     halign: 'center'
+                    size_hint_y: 0.2  # Використання відсоткової висоти
+                    theme_text_color: 'Custom'
+                    text_color: [85, 107, 47, 1]
 
-                MDLabel:
-                    text: 'Welcome to Command Line Interface!\nEnter the command to execute\n"add", "change", "phone", "all", "add-birthday", "show-birthday", "birthdays", "hello", "close", "exit"\n"add_note", "all_note", "delete_note", "search_note"\n"home"'
-                    halign: 'center'
 
                 MDTextField:
                     hint_text: 'Enter your command here...'
                     id: command_input
+                    on_text: app.show_command_suggestions(self.text)
+                    on_text: app.show_command_suggestions(self.text)
                     on_text_validate: app.process_command(root.ids.command_input.text)
+
             
         
 
