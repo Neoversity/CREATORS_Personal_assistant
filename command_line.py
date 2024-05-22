@@ -7,7 +7,6 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-
 from kivy.uix.dropdown import DropDown
 
 
@@ -33,7 +32,6 @@ class CommandLineProcessor:
             "show-birthday": self.show_birthday,
             "show_all_birthdays": self.show_all_birthdays,
             "birthday": self.search_by_date_birthdays,    
-            # "birthdays": self.show_all_birthdays,
             "hello": self.say_hello,
             "close": self.close_app,
             "exit": self.close_app,
@@ -82,6 +80,8 @@ class CommandLineProcessor:
     def on_command_entered(self, command):
         self.execute_command(command)
 
+
+
     def add_contact(self):
         self.address_book_app.root.ids.command_output_result.text = (
             "Please enter contact details <name> <email> <addresses> <birthday>:"
@@ -128,7 +128,6 @@ class CommandLineProcessor:
             on_text_validate=self.process_add_contact_input
         )
         return True
-
 
     def add_phone_to_contact(self):
         self.address_book_app.root.ids.command_output_result.text = (
@@ -180,7 +179,6 @@ class CommandLineProcessor:
             on_text_validate=self.process_add_phone_input
         )
         return True
-
 
     def change_contact(self):
         self.address_book_app.root.ids.command_output_result.text = (
@@ -283,7 +281,6 @@ class CommandLineProcessor:
             self.address_book_app.root.ids.command_output_result.text = "No contacts found."
         self.address_book_app.root.ids.command_input.text = ""
 
-
     def delete_contact(self):
         self.address_book_app.root.ids.command_output_result.text = (
             "Please enter the ID of the contact you want to delete:"
@@ -313,6 +310,8 @@ class CommandLineProcessor:
             on_text_validate=self.process_delete_contact_input
         )
         return True
+
+
 
     def add_birthday(self):
         self.address_book_app.root.ids.command_output_result.text = (
@@ -445,6 +444,8 @@ class CommandLineProcessor:
             on_text_validate=self.process_birthday_input
         )
         return True
+
+
 
     def add_note(self):
         self.address_book_app.root.ids.command_output_result.text = (
@@ -637,17 +638,18 @@ class CommandLineProcessor:
             f"Note ID: {note.id} has been updated."
         )
 
+
+
     def say_hello(self):
         self.address_book_app.root.ids.command_output_result.text = (
             "Hello! \nThe 'CREATORS' team welcomes you"
         )
         self.address_book_app.root.ids.logo_image.opacity = 1  # Показати зображення логотипу
         self.address_book_app.root.ids.command_input.text = ""
-           
 
     def close_app(self):
         self.address_book_app.stop()
-
+    
     def go_to_home(self):
         # Повертаємо до початкового стану для вибору команди
         self.address_book_app.root.ids.command_output_result.text = (
