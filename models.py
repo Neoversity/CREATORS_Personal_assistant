@@ -5,6 +5,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from datetime import datetime, timedelta
+
 engine = create_engine("sqlite:///phones.sqlite", echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -30,6 +32,18 @@ class User(Base):
         session.commit()
         return user
 
+    def add_phone_to_contact(self, new_phones):
+        # Створення нового об'єкта Phone і додавання його до користувача
+        new_phone_objs = [Phone(phone=phone) for phone in new_phones]
+        self.phones.extend(new_phone_objs)
+        session.commit()
+        return True
+
+    @classmethod
+    def find_by_id(cls, user_id):
+        return session.query(cls).get(user_id)
+
+
     @classmethod
     def find_by_name(cls, name):
         return session.query(cls).filter(cls.name.ilike(f"%{name}%"))
@@ -40,11 +54,29 @@ class User(Base):
 
     @classmethod
     def find_by_email(cls, email):
-        return session.query(cls).filter(cls.email.ilike(f"%{email}%"))
+        return session.query(cls).filter(cls.email == email).first()
 
     @classmethod
     def all(cls):
         return session.query(cls).all()
+    
+    
+    @property
+    def birthday_date(self):
+        try:
+            return datetime.strptime(self.birthday, "%d.%m.%Y")
+        except ValueError:
+            print(f"Invalid birthday format: {self.birthday}. Please use the format 'DD.MM.YYYY'.")
+            return None
+        
+    def get_birthday_in_days(self):
+        if self.birthday_date is None:
+            return None
+        current_date = datetime.now()
+        next_birthday = datetime(current_date.year, self.birthday_date.month, self.birthday_date.day)
+        if next_birthday < current_date:
+            next_birthday = datetime(current_date.year + 1, self.birthday_date.month, self.birthday_date.day)
+        return (next_birthday - current_date).days
 
     @classmethod
     def delete_by_id(cls, user_id):
@@ -54,6 +86,28 @@ class User(Base):
             session.commit()
             return True
         return False
+
+
+    
+
+
+class Phone(Base):
+    __tablename__ = "phones"
+    id = Column(Integer, primary_key=True)
+    phone = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="phones")
+
+    def __str__(self):
+        return self.phone
+
+    @classmethod
+    def add(cls, phone, user):
+        phone = cls(phone=phone, user=user)
+        session.add(phone)
+        session.commit()
+        return phone
+    
 
 
 class Note(Base):
@@ -88,25 +142,7 @@ class Note(Base):
             session.commit()
             return True
         return False
-    
 
-
-class Phone(Base):
-    __tablename__ = "phones"
-    id = Column(Integer, primary_key=True)
-    phone = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="phones")
-
-    def __str__(self):
-        return self.phone
-
-    @classmethod
-    def add(cls, phone, user):
-        phone = cls(phone=phone, user=user)
-        session.add(phone)
-        session.commit()
-        return phone
 
 
 Base.metadata.create_all(engine)
