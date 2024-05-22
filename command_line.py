@@ -107,11 +107,14 @@ class CommandLineProcessor:
             return True
         
         # Валідація дати народження
-        if not is_valid_birthday(birthday):
+        try:
+            birthday_date = datetime.strptime(birthday, "%d.%m.%Y")
+        except ValueError:
             self.address_book_app.root.ids.command_output_result.text = (
                 "Invalid birthday format. Please enter a valid birthday in the format DD.MM.YYYY."
             )
             return True
+
         # Перевірка на унікальність електронної пошти
         if User.find_by_email(email):
             self.address_book_app.root.ids.command_output_result.text = (
@@ -230,15 +233,37 @@ class CommandLineProcessor:
         popup.content = layout
         popup.open()
 
-    def save_edited_contact(self, user, new_name, new_email, new_addresses, new_birthday, popup):
-        user.name = new_name
-        user.email = new_email
-        user.addresses = new_addresses
-        user.birthday = new_birthday
+    def save_edited_contact(self, user, name, email, addresses, birthday, popup):
+        if not is_valid_email(email):
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Invalid email format. Please enter a valid email address."
+            )
+            return
+        
+        # Валідація дати народження
+        try:
+            birthday_date = datetime.strptime(birthday, "%d.%m.%Y")
+        except ValueError:
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Invalid birthday format. Please enter a valid birthday in the format DD.MM.YYYY."
+            )
+            return
+
+        # Перевірка на унікальність електронної пошти
+        if User.find_by_email(email) and user.email != email:
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Email already exists in the database. Please use a different email."
+            )
+            return
+        # Оновлення контакту
+        user.name = name
+        user.email = email
+        user.addresses = addresses
+        user.birthday = birthday
         session.commit()
         popup.dismiss()
         self.address_book_app.root.ids.command_output_result.text = (
-            f"Contact ID: {user.id} has been updated."
+            f"Contact {user.name} updated successfully."
         )
 
     def phone_search(self):
@@ -644,7 +669,6 @@ class CommandLineProcessor:
         self.address_book_app.root.ids.command_output_result.text = (
             "Hello! \nThe 'CREATORS' team welcomes you"
         )
-        self.address_book_app.root.ids.logo_image.opacity = 1  # Показати зображення логотипу
         self.address_book_app.root.ids.command_input.text = ""
 
     def close_app(self):
