@@ -5,6 +5,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from datetime import datetime, timedelta
+
 engine = create_engine("sqlite:///phones.sqlite", echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -57,6 +59,24 @@ class User(Base):
     @classmethod
     def all(cls):
         return session.query(cls).all()
+    
+    
+    @property
+    def birthday_date(self):
+        try:
+            return datetime.strptime(self.birthday, "%d.%m.%Y")
+        except ValueError:
+            print(f"Invalid birthday format: {self.birthday}. Please use the format 'DD.MM.YYYY'.")
+            return None
+        
+    def get_birthday_in_days(self):
+        if self.birthday_date is None:
+            return None
+        current_date = datetime.now()
+        next_birthday = datetime(current_date.year, self.birthday_date.month, self.birthday_date.day)
+        if next_birthday < current_date:
+            next_birthday = datetime(current_date.year + 1, self.birthday_date.month, self.birthday_date.day)
+        return (next_birthday - current_date).days
 
     @classmethod
     def delete_by_id(cls, user_id):

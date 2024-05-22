@@ -1,4 +1,6 @@
+import datetime
 from models import Note, User
+from datetime import datetime, timedelta
 
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
@@ -30,7 +32,8 @@ class CommandLineProcessor:
             "add-birthday": self.add_birthday,
             "show-birthday": self.show_birthday,
             "show_all_birthdays": self.show_all_birthdays,
-            "birthdays": self.show_all_birthdays,
+            "birthday": self.search_by_date_birthdays,    
+            # "birthdays": self.show_all_birthdays,
             "hello": self.say_hello,
             "close": self.close_app,
             "exit": self.close_app,
@@ -79,33 +82,6 @@ class CommandLineProcessor:
     def on_command_entered(self, command):
         self.execute_command(command)
 
-    # def add_contact(self):
-    #     self.address_book_app.root.ids.command_output_result.text = (
-    #         "Please enter contact details (name, email, addresses, birthday):"
-    #     )
-    #     self.address_book_app.root.ids.command_input.bind(
-    #         on_text_validate=self.process_add_contact_input
-    #     )
-    #     self.address_book_app.root.ids.command_input.text = ""
-
-    # def process_add_contact_input(self, instance):
-    #     input_text = instance.text
-    #     details = input_text.split()
-    #     if len(details) != 4:
-    #         self.address_book_app.root.ids.command_output_result.text = (
-    #             "Invalid input. Please enter name, email, addresses, and birthday separated by spaces."
-    #         )
-    #         return True
-    #     name, email, addresses, birthday = details
-    #     User.add(name, email, addresses, birthday)
-    #     self.address_book_app.root.ids.command_output_result.text = (
-    #         f"Contact {name} added successfully."
-    #     )
-    #     self.address_book_app.root.ids.command_input.text = ""
-    #     self.address_book_app.root.ids.command_input.unbind(
-    #         on_text_validate=self.process_add_contact_input
-    #     )
-    #     return True
     def add_contact(self):
         self.address_book_app.root.ids.command_output_result.text = (
             "Please enter contact details <name> <email> <addresses> <birthday>:"
@@ -127,6 +103,13 @@ class CommandLineProcessor:
         if not is_valid_email(email):
             self.address_book_app.root.ids.command_output_result.text = (
                 "Invalid email format. Please enter a valid email address."
+            )
+            return True
+        
+        # Валідація дати народження
+        if not is_valid_birthday(birthday):
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Invalid birthday format. Please enter a valid birthday in the format DD.MM.YYYY."
             )
             return True
         # Перевірка на унікальність електронної пошти
@@ -351,6 +334,8 @@ class CommandLineProcessor:
             contact = session.query(User).get(contact_id)
             if contact:
                 contact.birthday = birthday
+                if contact.birthday_date is None:
+                    raise ValueError(f"Invalid birthday format: {birthday}. Please use the format 'DD.MM.YYYY'.")
                 session.commit()
                 self.address_book_app.root.ids.command_output_result.text = (
                     f"Birthday added to contact ID {contact_id} successfully."
@@ -417,6 +402,49 @@ class CommandLineProcessor:
         else:
             self.address_book_app.root.ids.command_output_result.text = "No contacts found."
         self.address_book_app.root.ids.command_input.text = ""
+    
+    def search_by_date_birthdays(self, days=None):
+        if days is None:
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Please enter the number of days to search for upcoming birthdays:"
+            )
+            self.address_book_app.root.ids.command_input.bind(
+                on_text_validate=self.process_birthday_input
+            )
+            self.address_book_app.root.ids.command_input.text = ""
+        else:
+            current_date = datetime.now()
+            target_date = current_date + timedelta(days=days)
+
+            # Отримання списку контактів з бази даних
+            contacts = User.all()
+
+            # Фільтрація контактів за датою народження
+            matching_contacts = [contact for contact in contacts if contact.birthday_date is not None and contact.get_birthday_in_days() <= days]
+
+            return matching_contacts
+
+    def process_birthday_input(self, instance):
+        input_text = instance.text
+        print(f"Input text: {input_text}")
+
+        days = int(input_text)
+        print(f"Converted days: {days}")
+        matching_contacts = self.search_by_date_birthdays(days)
+        if matching_contacts:
+            self.address_book_app.root.ids.command_output_result.text = (
+                "Upcoming birthdays:\n" + "\n".join([contact.name for contact in matching_contacts])
+            )
+        else:
+            self.address_book_app.root.ids.command_output_result.text = (
+                "No birthdays found for the specified number of days."
+            )
+
+        self.address_book_app.root.ids.command_input.text = ""
+        self.address_book_app.root.ids.command_input.unbind(
+            on_text_validate=self.process_birthday_input
+        )
+        return True
 
     def add_note(self):
         self.address_book_app.root.ids.command_output_result.text = (
@@ -613,7 +641,9 @@ class CommandLineProcessor:
         self.address_book_app.root.ids.command_output_result.text = (
             "Hello! \nThe 'CREATORS' team welcomes you"
         )
+        self.address_book_app.root.ids.logo_image.opacity = 1  # Показати зображення логотипу
         self.address_book_app.root.ids.command_input.text = ""
+           
 
     def close_app(self):
         self.address_book_app.stop()

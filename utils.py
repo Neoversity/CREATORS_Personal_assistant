@@ -1,4 +1,5 @@
 import re
+import datetime
 
 from models import User, Phone, Note
 
@@ -16,6 +17,16 @@ def is_valid_email(email):
     # Проста валідація електронної пошти за допомогою регулярних виразів
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return bool(re.match(pattern, email))
+
+# def is_valid_birthday(birthday):
+#     try:
+#         day, month, year = map(int, birthday.split('.'))
+#         if day < 1 or day > 31 or month < 1 or month > 12 or year < 1900 or year > (datetime.datetime.now().year - 100):
+#             return False
+#         valid_date = datetime.datetime(day, month, year)
+#         return True
+#     except ValueError:
+#         return False
 
 
 def phone_saver(
