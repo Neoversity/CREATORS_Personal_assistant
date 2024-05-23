@@ -10,10 +10,6 @@
 - pip install -r requirements.txt
 - py main.py
 
-# Branch naming  !!!!
-- Use feature / BotAss-Ticket## flow style Example: 
-- branch name to work on feature c## 
-- branch name for releale releale/release-1.0 major branch always main
 
 # Фінальний проєкт​
 1. Save contacts with names, addresses, phone numbers, email and birthdays to the contact book;
