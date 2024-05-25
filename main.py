@@ -107,17 +107,18 @@ class AddressBookApp(MDApp):
             )
 
     def email_search_and_populate_results_list(self, query):
-        app = MDApp.get_running_app()
-        result_list_widget = app.root.ids.search_results
-        result_list_widget.clear_widgets()
-        for contact in show_all_for_email(query):
-            result_list_widget.add_widget(
-                SearchResultsItem(
-                    text=f"{contact[0]}",
-                    secondary_text=f"{contact[1]}",
-                    user_id=contact[2],
-                )
-            )
+        print("email_search_and_populate_results_list")
+        # app = MDApp.get_running_app()
+        # result_list_widget = app.root.ids.search_results
+        # result_list_widget.clear_widgets()
+        # for contact in show_all_for_email(query):
+        #     result_list_widget.add_widget(
+        #         SearchResultsItem(
+        #             text=f"{contact[0]}",
+        #             secondary_text=f"{contact[1]}",
+        #             user_id=contact[2],
+        #         )
+        #     )
 
     def birthday_search_and_populate_results_list(self, query):
         print("birthday_search_and_populate_results_list")
