@@ -4,7 +4,7 @@
 
 # Installing and launching the application
 
-- Clone https://github.com/Neoversity/PPF_BP_Personal_assistant.git
+- Clone https://github.com/Neoversity/CREATORS_Personal_assistant.git
 - python -m venv venv
 - venv\Scripts\activate
 - pip install -r requirements.txt
