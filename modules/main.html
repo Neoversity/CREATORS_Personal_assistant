@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>main &mdash; ХХХХ Це розробка програмного забезпечення, яке включає в себе книгу контактів з можливістю збереження контактних даних, нотатки для запису текстової інформації. documentation</title>
+  <title>main &mdash; Це розробка програмного забезпечення, яке включає в себе книгу контактів з можливістю збереження контактних даних, нотатки для запису текстової інформації. documentation</title>
       <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
 
@@ -31,7 +31,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            ХХХХ
+            CREATORS - Assistant
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -52,7 +52,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">ХХХХ</a>
+          <a href="../index.html">CREATORS - Assistant</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -71,7 +71,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for main</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">kivymd.app</span> <span class="kn">import</span> <span class="n">MDApp</span>
+<span></span><span class="kn">from</span> <span class="nn">kivy.app</span> <span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">kivymd.app</span> <span class="kn">import</span> <span class="n">MDApp</span>
+<span class="kn">from</span> <span class="nn">kivy.uix.boxlayout</span> <span class="kn">import</span> <span class="n">BoxLayout</span>
 <span class="kn">from</span> <span class="nn">kivymd.uix.boxlayout</span> <span class="kn">import</span> <span class="n">MDBoxLayout</span>
 <span class="kn">from</span> <span class="nn">kivymd.uix.button</span> <span class="kn">import</span> <span class="n">MDIconButton</span>
 <span class="kn">from</span> <span class="nn">kivymd.uix.list</span> <span class="kn">import</span> <span class="n">IRightBody</span><span class="p">,</span> <span class="n">TwoLineAvatarIconListItem</span>
@@ -258,6 +260,9 @@
             <span class="n">sm</span><span class="o">.</span><span class="n">switch_tab</span><span class="p">(</span><span class="s2">&quot;screen search&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Last note saved with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">note_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">close_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
 <div class="viewcode-block" id="AddressBookApp.build">
 <a class="viewcode-back" href="../main.html#main.AddressBookApp.build">[docs]</a>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -265,8 +270,11 @@
         <span class="k">return</span> <span class="n">MainWindow</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">close_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+    <span class="k">def</span> <span class="nf">process_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_processor</span><span class="o">.</span><span class="n">on_command_entered</span><span class="p">(</span><span class="n">command_text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">show_command_suggestions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_processor</span><span class="o">.</span><span class="n">show_suggestions</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 
 
